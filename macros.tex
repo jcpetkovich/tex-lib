@@ -1,0 +1,86 @@
+% macros.tex -- holds useful macros, acronyms, and other latex tricks
+
+% Macros
+\usepackage{xspace}
+\newcommand\code[1]{\textsf{\small #1}\xspace}
+\newcommand{\ie}{i.e.,\xspace}
+\newcommand{\eg}{e.g.,\xspace}
+\newcommand{\etal}{{\it et al.}\xspace}
+
+% Acronyms
+\usepackage{acronym}
+\acrodef{os}[OS]{Operating System}
+\acrodef{aslr}[ASLR]{Address Space Layout Randomization}
+\acrodef{api}[API]{Application Programming Interface}
+\acrodef{pcb}[PCB]{Process Control Block}
+\acrodef{sp}[SP]{Stack Pointer}
+\acrodef{pc}[PC]{Program Counter}
+\acrodef{ipc}[IPC]{Inter-Process Communication}
+\acrodef{pid}[PID]{Process ID}
+
+% Tikz
+\usepackage{tikz}
+\tikzstyle{na} = [baseline=-.5ex]
+
+% Set madhax one to disable:
+\def\madhax{1}
+\if\madhax 1
+\makeatletter
+\def\grd@save@target#1{%
+  \def\grd@target{#1}}
+\def\grd@save@start#1{%
+  \def\grd@start{#1}}
+\tikzset{
+  grid with coordinates/.style={
+    to path={%
+      \pgfextra{%
+        \edef\grd@@target{(\tikztotarget)}%
+        \tikz@scan@one@point\grd@save@target\grd@@target\relax
+        \edef\grd@@start{(\tikztostart)}%
+        \tikz@scan@one@point\grd@save@start\grd@@start\relax
+        \draw[minor help lines] (\tikztostart) grid (\tikztotarget);
+        \draw[major help lines] (\tikztostart) grid (\tikztotarget);
+        \grd@start
+        \pgfmathsetmacro{\grd@xa}{\the\pgf@x/1cm}
+        \pgfmathsetmacro{\grd@ya}{\the\pgf@y/1cm}
+        \grd@target
+        \pgfmathsetmacro{\grd@xb}{\the\pgf@x/1cm}
+        \pgfmathsetmacro{\grd@yb}{\the\pgf@y/1cm}
+        \pgfmathsetmacro{\grd@xc}{\grd@xa + \pgfkeysvalueof{/tikz/grid with coordinates/major step}}
+        \pgfmathsetmacro{\grd@yc}{\grd@ya + \pgfkeysvalueof{/tikz/grid with coordinates/major step}}
+        \foreach \x in {\grd@xa,\grd@xc,...,\grd@xb}
+        \node[anchor=north] at (\x,\grd@ya) {\pgfmathprintnumber{\x}};
+        \foreach \y in {\grd@ya,\grd@yc,...,\grd@yb}
+        \node[anchor=east] at (\grd@xa,\y) {\pgfmathprintnumber{\y}};
+      }
+    }
+  },
+  minor help lines/.style={
+    help lines,
+    step=\pgfkeysvalueof{/tikz/grid with coordinates/minor step}
+  },
+  major help lines/.style={
+    help lines,
+    line width=\pgfkeysvalueof{/tikz/grid with coordinates/major line width},
+    step=\pgfkeysvalueof{/tikz/grid with coordinates/major step}
+  },
+  grid with coordinates/.cd,
+  minor step/.initial=.2,
+  major step/.initial=1,
+  major line width/.initial=2pt,
+}
+\makeatother
+\fi
+
+% For drawing grids, use the following in a tikz picture:
+% \draw (0,0) to[grid with coordinates] (11,6);
+
+% \highlight<on slide><but not these slides>[this text]. The first
+% triangle arg of highlight defines the slide that the text should be
+% highlighted on, the second triangle bracket contains the slides that
+% it should not be highlighted on. The square brackets house the text.
+%
+% TODO: Is it possible to make it so that all the "rest" of the slides
+% are added automatically? I'm not really good enough at latex to know
+% if this is possible.
+\def\highlight<#1><#2>[#3]{\only<#1>{\textcolor{datamillorange}{#3}}\only<#2>{#3}}
